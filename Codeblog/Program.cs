@@ -10,7 +10,8 @@ namespace Codeblog
     {
         static void Main(string[] args)
         {
-
+            Console.WriteLine("Проверка размещения репозитория.");
+            Console.ReadKey();
         }
     }
 }
