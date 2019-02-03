@@ -12,6 +12,6 @@ namespace Codeblog
         {
             Console.WriteLine("Проверка размещения репозитория.");
             Console.ReadKey();
-        }
+        }        
     }
 }
