@@ -14,6 +14,7 @@ namespace CodBlogFitness.BL.Model
         /// <summary>
         /// Название
         /// </summary>
+        [Serializable]
         public string Name { get; }
         /// <summary>
         /// Создать новый пол
