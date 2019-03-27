@@ -10,34 +10,60 @@ using System.Threading.Tasks;
 namespace CodBlogFitness.BL.Controller
 {
     /// <summary>
-    /// Контроллер польлзователя.
+    /// Контроллер пользователя.
     /// </summary>
     public class UserController
     {
         /// <summary>
-        /// Рользователь приложения.
+        /// Пользователь приложения.
         /// </summary>
-        public User User { get; }
-        public UserController(string userName,string genderName,DateTime birthDay,double weight,double height)
-        {//TODO: проверка
-            var gender = new Gender(genderName);
-            User = new User(userName, gender, birthDay, weight, height);
+        public List<User> Users { get; }
+        public User CurrentUser { get; }
+        public bool IsNewUser { get; } = false;
+        public UserController(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException("Необходимо заполнить имя", nameof(userName));
+            }
+
+            Users = GetUsersData();
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
+
+            if (CurrentUser == null)
+            {
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                IsNewUser = true;          
+            }
         }
         /// <summary>
-        /// Получить данные пользователя.
+        /// Получить сохраненные данные пользователей.
         /// </summary>
         /// <returns>Пользователь приложения.</returns>
-        public UserController()
+        private List<User> GetUsersData()
         {
             var formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                if (formatter.Deserialize(fs) is User user)
-                {
-                    User = user;
+                if (fs.Length>0&&formatter.Deserialize(fs) is List<User> users)
+                {                    
+                    return users;
                 }
-                //TODO: что делать, если пользователя не прочитали
+                else
+                {
+                    return new List<User>();
+                }
             }
+        }
+        public void SetNewUserData(string genderName,DateTime birthDate,double weigth=0,double height=0)
+        {
+            CurrentUser.Gender = new Gender(genderName);
+            CurrentUser.BirthDate = birthDate;
+            CurrentUser.Weight = weigth;
+            CurrentUser.Height = height;
+
+            Save();
         }
         /// <summary>
         /// Сохранить данные пользователя.
@@ -47,7 +73,7 @@ namespace CodBlogFitness.BL.Controller
             var formatter = new BinaryFormatter();
             using(var fs=new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, User);
+                formatter.Serialize(fs, Users);
             }
         }
         

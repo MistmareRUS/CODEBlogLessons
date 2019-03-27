@@ -9,12 +9,12 @@ namespace CodBlogFitness.BL.Model
     /// <summary>
     /// Пол.
     /// </summary>
+    [Serializable]
     public class Gender
     {
         /// <summary>
         /// Название
         /// </summary>
-        [Serializable]
         public string Name { get; }
         /// <summary>
         /// Создать новый пол
@@ -24,7 +24,7 @@ namespace CodBlogFitness.BL.Model
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException("Пол не может быть не заполненным",nameof(name);
+                throw new ArgumentNullException("Пол не может быть не заполненным",nameof(name));
             }
             Name = name;
         }
