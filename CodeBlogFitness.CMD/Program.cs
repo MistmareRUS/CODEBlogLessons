@@ -2,7 +2,9 @@
 using CodBlogFitness.BL.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,15 +14,18 @@ namespace CodeBlogFitness.CMD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Привет!");
-            Console.WriteLine("Введите имя пользователя:");
+            var culture = CultureInfo.CurrentCulture;
+            //var culture = CultureInfo.CreateSpecificCulture("en-US");
+            var resourceManager = new ResourceManager("CodeBlogFitness.CMD.Languages.Messages", typeof(Program).Assembly);
+            Console.WriteLine(resourceManager.GetString("Hello",culture));
+            Console.WriteLine(resourceManager.GetString("EnterName",culture));
             var name = Console.ReadLine();
 
             var userController = new UserController(name);
             var eatingController = new EatingController(userController.CurrentUser);
             if (userController.IsNewUser)
             {
-                Console.WriteLine("Введите пол:");
+                Console.WriteLine(resourceManager.GetString("EnterGender",culture));
                 var gender = Console.ReadLine();
                 DateTime birth = ParseDate();  
                 double weight = ParseDouble("вес");
@@ -41,7 +46,7 @@ namespace CodeBlogFitness.CMD
                 eatingController.Add(foods.Food, foods.Weight);
                 foreach (var item in eatingController.Eating.Foods)
                 {
-                    Console.WriteLine($"\t{item.Key}-{item.Value}");
+                    Console.WriteLine($"\t{item.Key}-{item.Value}" );
                 }
             }
 
