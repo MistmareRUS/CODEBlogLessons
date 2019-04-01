@@ -23,11 +23,12 @@ namespace CodeBlogFitness.CMD
 
             var userController = new UserController(name);
             var eatingController = new EatingController(userController.CurrentUser);
+            var exerciseController = new ExerciseController(userController.CurrentUser);
             if (userController.IsNewUser)
             {
                 Console.WriteLine(resourceManager.GetString("EnterGender",culture));
                 var gender = Console.ReadLine();
-                DateTime birth = ParseDate();  
+                DateTime birth = ParseDate("дату рождения");  
                 double weight = ParseDouble("вес");
                 double height = ParseDouble("рост");
 
@@ -36,22 +37,55 @@ namespace CodeBlogFitness.CMD
             }
             Console.WriteLine("Привет, "+ userController.CurrentUser);
 
-            Console.WriteLine("Что вы хотите сделать?");
-            Console.WriteLine("Е- ввести прием пищи.");
-            var key=Console.ReadKey();
-            Console.WriteLine();
-            if (key.Key == ConsoleKey.E)
+
+            while (true)
             {
-                var foods=EnterEating();
-                eatingController.Add(foods.Food, foods.Weight);
-                foreach (var item in eatingController.Eating.Foods)
+                Console.WriteLine("Что вы хотите сделать?");
+                Console.WriteLine("Е- ввести прием пищи.");
+                Console.WriteLine("A- ввести упражнение.");
+                Console.WriteLine("Q- выход.");
+                var key=Console.ReadKey();
+                Console.WriteLine();
+
+                switch (key.Key)
                 {
-                    Console.WriteLine($"\t{item.Key}-{item.Value}" );
+                    case ConsoleKey.E:
+                        var foods= EnterEating();
+                        eatingController.Add(foods.Food, foods.Weight);
+                        foreach (var item in eatingController.Eating.Foods)
+                        {
+                            Console.WriteLine($"\t{item.Key}-{item.Value}");
+                        }
+                        break;
+                    case ConsoleKey.A:
+                        var exe = EnterExercise();
+                        exerciseController.Add(exe.Activity, exe.Start, exe.Finish);
+
+                        foreach (var item in exerciseController.Exersises)
+                        {
+                            Console.WriteLine($"\t{item.Activity} с {item.Start.ToShortTimeString()} до {item.Finish.ToShortTimeString()}");
+                        }
+                        break;
+                    case ConsoleKey.Q:
+                        Environment.Exit(0);
+                        break;
                 }
+                Console.ReadKey();
+                Console.Clear();
             }
 
 
-            Console.ReadKey();
+        }
+
+        private static (DateTime Start,DateTime Finish, Activity Activity) EnterExercise()
+        {
+            Console.WriteLine("Введите название упражнения:");
+            var name = Console.ReadLine();
+            var energy = ParseDouble("расход энергии");
+            var start = ParseDate("начало упражнения");
+            var finish = ParseDate("окончание упражнения");
+            var activity = new Activity(name, energy);
+            return (start, finish, activity);
         }
 
         private static (Food Food,double Weight) EnterEating()
@@ -69,12 +103,12 @@ namespace CodeBlogFitness.CMD
             return  (Food:product,Weight: weight);
 ;        }
 
-        private static DateTime ParseDate()
+        private static DateTime ParseDate(string value)
         {
             DateTime date;
             do
             {
-                Console.WriteLine("Введите дату рождения в формате dd.mm.yyyy");
+                Console.WriteLine($"Введите {value} в формате dd.mm.yyyy");
                 DateTime.TryParse(Console.ReadLine(), out  date);
             }
             while (date == DateTime.MinValue);

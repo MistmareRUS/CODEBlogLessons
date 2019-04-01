@@ -12,11 +12,12 @@ namespace CodBlogFitness.BL.Model
     [Serializable]
     public class User
     {
+        public int Id { get; set; }
         #region Свойства
         /// <summary>
         /// Имя.
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
         /// <summary>
         /// Пол.
         /// </summary>
@@ -34,6 +35,10 @@ namespace CodBlogFitness.BL.Model
         /// </summary>
         public double Height { get; set; }
         public int Age { get { return DateTime.Now.Year - BirthDate.Year; } }
+        public User()
+        {
+
+        }
         #endregion
         /// <summary>
         /// Создать нового пользователя.

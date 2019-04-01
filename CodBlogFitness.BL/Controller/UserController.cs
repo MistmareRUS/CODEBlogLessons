@@ -43,7 +43,7 @@ namespace CodBlogFitness.BL.Controller
         /// <returns>Пользователь приложения.</returns>
         private List<User> GetUsersData()
         {
-            return Load<List<User>>("users") ?? new List<User>();            
+            return Load<User>() ?? new List<User>();            
         }
         public void SetNewUserData(string genderName,DateTime birthDate,double weigth=0,double height=0)
         {
@@ -59,7 +59,7 @@ namespace CodBlogFitness.BL.Controller
         /// </summary>
         public void Save()
         {
-            Save("users", Users);
+            Save(Users);
         }
         
     }
