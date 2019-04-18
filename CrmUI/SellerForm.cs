@@ -18,6 +18,11 @@ namespace CrmUI
         {
             InitializeComponent();
         }
+        public SellerForm(Seller s):this()
+        {
+            Seller = s;
+            textBox1.Text = s.Name;
+        }
 
         private void CustomerForm_Load(object sender, EventArgs e)
         {
@@ -26,7 +31,8 @@ namespace CrmUI
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            Seller = new Seller { Name = textBox1.Text };
+            var s = Seller ?? new Seller();
+            s.Name = textBox1.Text ;
             Close();
         }
     }
